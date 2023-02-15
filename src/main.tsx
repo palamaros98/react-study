@@ -6,7 +6,6 @@ import {HelloWorld, NewHelloWorld} from "./hello-world/HelloWorld";
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <HelloWorld/>
     <NewHelloWorld/>
   </React.StrictMode>,
 )

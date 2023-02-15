@@ -1,0 +1,25 @@
+.menu {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+}
+
+.menu:last-child {
+    border-right:  1px solid purple;
+}
+
+.item {
+    width: calc(100% / 3);
+    height: 80px;
+    border-left: 1px solid purple;
+    font-size: 18px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
