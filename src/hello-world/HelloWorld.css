@@ -15,7 +15,6 @@
 
 .item {
     width: calc(100% / 3);
-    height: 80px;
     border-left: 1px solid purple;
     font-size: 18px;
     color: white;

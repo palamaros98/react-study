@@ -1,13 +1,13 @@
 import './HelloWorld.css';
 import {
-  ChangeEvent,
-  ChangeEventHandler,
-  Dispatch,
-  FocusEventHandler,
-  Fragment,
-  MouseEventHandler,
-  SetStateAction,
-  useState
+    ChangeEventHandler,
+    ReactNode,
+    FocusEventHandler,
+    Fragment,
+    MouseEventHandler,
+    useState,
+    Dispatch,
+    SetStateAction, ChangeEvent
 } from "react";
 
 const menuItems = [{name: 'Products'}, {name: 'Delivery'}, {name: 'Contacts'}, {name: 'Categories'}, {name: 'Store'}, {name: 'Map'}]
@@ -32,15 +32,17 @@ export const NewHelloWorld = (): JSX.Element => {
 export function Header(): JSX.Element {
     return (
         <section>
-          <Menu/>
+            <Menu>
+                <Item items={menuItems}/>
+            </Menu>
         </section>
     )
 }
 
-export function Menu(): JSX.Element {
+export function Menu(props: {children: ReactNode}): JSX.Element {
     return (
       <ul className="menu">
-          <Item items={menuItems}/>
+          {props.children}
       </ul>
     )
 }
@@ -110,6 +112,7 @@ export function Item(props: {items: Array<{name: string}>}): JSX.Element {
         items.map((item, index) => {
             const onFocus = () => (console.log(`${item.name} FOCUSED`))
             const onBlur = () => (console.log(`${item.name} BLURED`))
+            //TODO: винести useState вище
             const [name, setName] = useState<string>('');
             const [surname, setSurname] = useState<string>('');
             const [users, setUsers] = useState<User[]>([])
