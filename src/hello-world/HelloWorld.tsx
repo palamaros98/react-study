@@ -50,15 +50,14 @@ export function ItemButton(props: {
   onClick: MouseEventHandler<HTMLButtonElement>,
 }): JSX.Element {
   const {name, onClick} = props;
-  console.log(name)
-  return <button onClick={onClick}>{name}</button>
+  return <button data-value={name} onClick={onClick}>{name}</button>
 }
 
 export function ItemInput(props: {
   onChange: ChangeEventHandler<HTMLInputElement>,
-  onFocus: FocusEventHandler<HTMLInputElement>,
-  onBlur: FocusEventHandler<HTMLInputElement>,
-  value: string,
+  onFocus?: FocusEventHandler<HTMLInputElement>,
+  onBlur?: FocusEventHandler<HTMLInputElement>,
+  value?: string,
 }): JSX.Element {
   const {onChange, onFocus, onBlur, value} = props;
 
@@ -67,6 +66,11 @@ export function ItemInput(props: {
 
 export function TableInputValues(props: {users: User[]}): JSX.Element {
   const {users}= props;
+
+  if(!users) {
+    return <></>
+  }
+
   return (
     <>
       <table>
@@ -95,33 +99,58 @@ export function TableInputValues(props: {users: User[]}): JSX.Element {
 }
 
 function buildChangeHandler(
-  setter: Dispatch<SetStateAction<string>>
+  setter: Dispatch<SetStateAction<{value: string, userItem: string}>>,
+  userItem: string
 ): ChangeEventHandler<HTMLInputElement> {
   return (event: ChangeEvent<HTMLInputElement>) => {
-    setter(event.target.value);
+    setter({value: event.target.value, userItem});
   };
+}
+
+function getInitialMenuObject(): {[key:string]: User} {
+  const menuItemsObj: {[key:string]: User} = {};
+  menuItems.forEach((item) => menuItemsObj[item.name] = {name: '', surname: ''})
+
+  return menuItemsObj;
 }
 
 export function Item(props: {items: Array<{name: string}>}): JSX.Element {
   const {items} = props;
+  const [user, setUser] = useState<{ [prop: string]: User }>(getInitialMenuObject());
+  const [users, setUsers] = useState<{ [prop: string]: User[] }>({})
+
+  const setUserName = (value: any) => setUser((previousUser) => {
+    return {
+      ...previousUser,
+      [value.userItem]: { name: value.value, surname: previousUser[value.userItem].surname }
+    }
+  });
+
+  const setUserSurname = (value: any) => setUser((previousUser) => {
+    return {
+      ...previousUser,
+      [value.userItem]: { name: previousUser[value.userItem].name, surname: value.value }
+    };
+  });
+
+  const addUser = (event: any) => setUsers((previousUsers) => {
+    console.log('vasa')
+    return previousUsers;
+  });
+
   return (
     <>
       {
         items.map((item, index) => {
             const onFocus = () => (console.log(`${item.name} FOCUSED`))
             const onBlur = () => (console.log(`${item.name} BLURED`))
-            const [name, setName] = useState<string>('');
-            const [surname, setSurname] = useState<string>('');
-            const [users, setUsers] = useState<User[]>([])
-
-            const addUser = () => setUsers((previousUser) => [...previousUser, {name, surname}]);
 
             return (<li key={index} className="item">
               <div style={{display: 'flex', flexDirection: 'column'}}>
                 <ItemButton name={item.name} onClick={addUser}/>
-                <ItemInput onChange={buildChangeHandler(setName)} onFocus={onFocus} onBlur={onBlur} value={name}/>
-                <ItemInput onChange={buildChangeHandler(setSurname)} onFocus={onFocus} onBlur={onBlur} value={surname}/>
-                <TableInputValues users={users}/>
+                <ItemInput onChange={buildChangeHandler(setUserName, item.name)} value={user?.[item.name]?.name}/>
+                <ItemInput onChange={buildChangeHandler(setUserSurname, item.name)} value={user?.[item.name]?.surname}/>
+                <TableInputValues users={users[item.name]}/>
               </div>
             </li>)
           }
