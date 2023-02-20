@@ -1,13 +1,13 @@
 import './HelloWorld.css';
 import {
-  ChangeEvent,
-  ChangeEventHandler,
-  Dispatch,
-  FocusEventHandler,
-  Fragment,
-  MouseEventHandler,
-  SetStateAction,
-  useState
+    ChangeEventHandler,
+    ReactNode,
+    FocusEventHandler,
+    Fragment,
+    MouseEventHandler,
+    useState,
+    Dispatch,
+    SetStateAction, ChangeEvent
 } from "react";
 
 const menuItems = [{name: 'Products'}, {name: 'Delivery'}, {name: 'Contacts'}, {name: 'Categories'}, {name: 'Store'}, {name: 'Map'}]
@@ -32,15 +32,17 @@ export const NewHelloWorld = (): JSX.Element => {
 export function Header(): JSX.Element {
     return (
         <section>
-          <Menu/>
+            <Menu>
+                <Item items={menuItems}/>
+            </Menu>
         </section>
     )
 }
 
-export function Menu(): JSX.Element {
+export function Menu(props: {children: ReactNode}): JSX.Element {
     return (
       <ul className="menu">
-          <Item items={menuItems}/>
+          {props.children}
       </ul>
     )
 }
