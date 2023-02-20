@@ -109,7 +109,47 @@ function buildChangeHandler(
   };
 }
 
-function getInitialMenuObject(): {[key:string]: User} {
+export interface UseUserField {
+  user: UserField;
+  setUserName: (value: any) => void;
+  setUserSurname: (value: any) => void;
+}
+
+export interface UserField {
+  [prop: string]: User;
+}
+
+export function useUser(initialValue: UserField): UseUserField {
+  const [user, setUser] = useState<UserField>(initialValue);
+
+  const setUserName = (value: any) => setUser((previousUser: UserField) => (
+    {
+      ...previousUser,
+      [value.userItem]: {
+        name: value.name,
+        surname: previousUser[value.userItem].surname
+      }
+    }
+  ));
+
+  const setUserSurname = (value: any) => setUser((previousUser: UserField) => (
+    {
+      ...previousUser,
+      [value.userItem]: {
+        name: previousUser[value.userItem].name,
+        surname: value.surname
+      }
+    }
+  ));
+
+  return {
+    user,
+    setUserName,
+    setUserSurname,
+  };
+}
+
+function getInitialMenuObject(): UserField {
   const menuItemsObj: {[key:string]: User} = {};
   menuItems.forEach((item) => menuItemsObj[item.name] = {name: '', surname: ''})
 
@@ -118,26 +158,23 @@ function getInitialMenuObject(): {[key:string]: User} {
 
 export function Item(props: {items: Array<{name: string}>}): JSX.Element {
   const {items} = props;
-  const [user, setUser] = useState<{ [prop: string]: User }>(getInitialMenuObject());
+  const {user, setUserName, setUserSurname} = useUser(getInitialMenuObject());
   const [users, setUsers] = useState<{ [prop: string]: User[] }>({})
 
-  const setUserName = (value: any) => setUser((previousUser) => {
-    return {
-      ...previousUser,
-      [value.userItem]: { name: value.value, surname: previousUser[value.userItem].surname }
-    }
-  });
-
-  const setUserSurname = (value: any) => setUser((previousUser) => {
-    return {
-      ...previousUser,
-      [value.userItem]: { name: previousUser[value.userItem].name, surname: value.value }
-    };
-  });
-
   const addUser = (event: any) => setUsers((previousUsers) => {
-    console.log('vasa')
-    return previousUsers;
+    const {value: itemName} = event.target.dataset;
+    const usersList = {...previousUsers};
+
+    if (!usersList[itemName]){
+      usersList[itemName] = [];
+    }
+
+    usersList[itemName].push({
+      name: user[itemName].name,
+      surname: user[itemName].surname,
+    });
+
+    return usersList;
   });
 
   return (
@@ -150,8 +187,8 @@ export function Item(props: {items: Array<{name: string}>}): JSX.Element {
             return (<li key={index} className="item">
               <div style={{display: 'flex', flexDirection: 'column'}}>
                 <ItemButton name={item.name} onClick={addUser}/>
-                <ItemInput onChange={buildChangeHandler(setUserName, item.name)} value={user?.[item.name]?.name}/>
-                <ItemInput onChange={buildChangeHandler(setUserSurname, item.name)} value={user?.[item.name]?.surname}/>
+                <ItemInput onChange={(event: ChangeEvent<HTMLInputElement>) => setUserName({name: event.target.value, userItem: item.name})} value={user?.[item.name]?.name}/>
+                <ItemInput onChange={(event: ChangeEvent<HTMLInputElement>) => setUserSurname({surname: event.target.value, userItem: item.name})} value={user?.[item.name]?.surname}/>
                 <TableInputValues users={users[item.name]}/>
               </div>
             </li>)
