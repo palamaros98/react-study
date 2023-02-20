@@ -156,23 +156,33 @@ function getInitialMenuObject(): UserField {
   return menuItemsObj;
 }
 
+function getInitialMenuUsersObject(): {[key:string]: User[]} {
+  const menuItemsObj: {[key:string]: User[]} = {};
+  menuItems.forEach((item) => menuItemsObj[item.name] = [])
+
+  return menuItemsObj;
+}
+
 export function Item(props: {items: Array<{name: string}>}): JSX.Element {
   const {items} = props;
   const {user, setUserName, setUserSurname} = useUser(getInitialMenuObject());
-  const [users, setUsers] = useState<{ [prop: string]: User[] }>({})
+  const [users, setUsers] = useState<{ [prop: string]: User[] }>(getInitialMenuUsersObject())
 
   const addUser = (event: any) => setUsers((previousUsers) => {
-    const {value: itemName} = event.target.dataset;
+    const {value: userItem} = event.target.dataset;
     const usersList = {...previousUsers};
 
-    if (!usersList[itemName]){
-      usersList[itemName] = [];
+    if (!usersList[userItem]){
+      usersList[userItem] = [];
     }
 
-    usersList[itemName].push({
-      name: user[itemName].name,
-      surname: user[itemName].surname,
+    usersList[userItem].push({
+      name: user[userItem].name,
+      surname: user[userItem].surname,
     });
+
+    setUserName({name: '', userItem});
+    setUserSurname({surname: '', userItem});
 
     return usersList;
   });

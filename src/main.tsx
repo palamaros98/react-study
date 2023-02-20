@@ -5,7 +5,5 @@ import './index.css'
 import {HelloWorld, NewHelloWorld} from "./hello-world/HelloWorld";
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
     <NewHelloWorld/>
-  </React.StrictMode>,
 )
