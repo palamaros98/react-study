@@ -1,18 +1,9 @@
-import {useEffect, useState} from 'react'
-import reactLogo from './assets/react.svg'
+import React from 'react'
 import './App.css'
-import {UseStateBasics} from "./hello-world/HelloWorld";
+import {NewHelloWorld} from "./hello-world/HelloWorld";
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    console.log(count)
-  }, [])
-
-  return (
-    <UseStateBasics/>
-  )
+  return (<NewHelloWorld/>)
 }
 
 export default App

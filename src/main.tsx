@@ -1,9 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
 import './index.css'
-import {HelloWorld, NewHelloWorld} from "./hello-world/HelloWorld";
+import App from "./App";
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <NewHelloWorld/>
-)
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App/>)
