@@ -29,7 +29,7 @@ export function getInitialMenuUsersObject(): IMenuItemWithUsersList {
 
 export function getInitialMenuItemBtnAction(): MenuItemBtnAction {
   const menuItemsObj: MenuItemBtnAction = {};
-  menuItems.forEach((item) => menuItemsObj[item.name] = false)
+  menuItems.forEach((item) => menuItemsObj[item.name] = true)
 
   return menuItemsObj;
 }
