@@ -2,6 +2,7 @@ import {IUser} from "../Interfaces/User";
 import {ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction} from "react";
 import {IMenuItemWithUser} from "../Interfaces/MenuItemWithUser";
 import {IMenuItemWithUsersList} from "../Interfaces/MenuItemWithUsersList";
+import {MenuItemBtnAction} from "../Interfaces/MenuItemBtnAction";
 
 export const menuItems = [
   {name: 'Products'},
@@ -22,6 +23,13 @@ export function getInitialMenuObject(): IMenuItemWithUser {
 export function getInitialMenuUsersObject(): IMenuItemWithUsersList {
   const menuItemsObj: IMenuItemWithUsersList = {};
   menuItems.forEach((item) => menuItemsObj[item.name] = [])
+
+  return menuItemsObj;
+}
+
+export function getInitialMenuItemBtnAction(): MenuItemBtnAction {
+  const menuItemsObj: MenuItemBtnAction = {};
+  menuItems.forEach((item) => menuItemsObj[item.name] = false)
 
   return menuItemsObj;
 }

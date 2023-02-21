@@ -4,10 +4,10 @@ import {UseUserField} from "../Interfaces/UseUserField";
 import {DeepPartial} from "tsdef";
 import {cloneDeep, merge} from "lodash";
 
-type UserMergeState<T> = [T, (change: DeepPartial<T>) => void]
+type MergeState<T> = [T, (change: DeepPartial<T>) => void]
 
-export function useUserMerge<T>(initialValue: () => T, validationStateFn?: (value: T) => T | null): UserMergeState<T> {
-  const [menuItemWithUsers, setMenuItemUser] = useState<T>(initialValue);
+export function useMerge<T>(initialValue: () => T, validationStateFn?: (value: T) => T | null): MergeState<T> {
+  const [mergeItems, setMenuItemUser] = useState<T>(initialValue);
 
   const mergeState = (changes: DeepPartial<T>) => {
     setMenuItemUser((prevState) => {
@@ -16,7 +16,7 @@ export function useUserMerge<T>(initialValue: () => T, validationStateFn?: (valu
     })
   }
 
- return [menuItemWithUsers, mergeState]
+ return [mergeItems, mergeState]
 }
 
 export function useUser(initialValue: IMenuItemWithUser): UseUserField {
