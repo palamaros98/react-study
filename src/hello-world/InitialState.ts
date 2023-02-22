@@ -3,6 +3,7 @@ import {ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction} from "react";
 import {IMenuItemWithUser} from "../Interfaces/MenuItemWithUser";
 import {IMenuItemWithUsersList} from "../Interfaces/MenuItemWithUsersList";
 import {MenuItemBtnAction} from "../Interfaces/MenuItemBtnAction";
+import {BtnActionFn} from "./MenuItem";
 
 export const menuItems = [
   {name: 'Products'},
@@ -27,9 +28,13 @@ export function getInitialMenuUsersObject(): IMenuItemWithUsersList {
   return menuItemsObj;
 }
 
-export function getInitialMenuItemBtnAction(): MenuItemBtnAction {
+export function getInitialMenuItemBtnAction(fn: BtnActionFn): MenuItemBtnAction {
   const menuItemsObj: MenuItemBtnAction = {};
-  menuItems.forEach((item) => menuItemsObj[item.name] = true)
+  menuItems.forEach((item) => menuItemsObj[item.name] = {
+    action: 'add',
+    disabled: true,
+    fn
+  })
 
   return menuItemsObj;
 }
