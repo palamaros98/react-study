@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {getInitialMenuItemBtnAction, getInitialMenuObject, getInitialMenuUsersObject} from "./InitialState";
 import {TableUsers} from "./TableUsers";
 import {Button} from "../Components/Button";
@@ -15,7 +15,6 @@ export function Item(props: {items: Array<{name: string}>}): JSX.Element {
   const [users, setUsers] = useState<IMenuItemWithUsersList>(getInitialMenuUsersObject);
 
   const checkDisableBtn = (btnAction: 'add' | 'delete', menuItem: string): boolean => {
-    console.log(menuItemWithUsers[menuItem])
     return (btnAction === 'add' && (menuItemWithUsers[menuItem].name === '' || menuItemWithUsers[menuItem].surname === '')) ||
       (btnAction === 'delete' && users[menuItem].length === 0)
   }
@@ -54,23 +53,20 @@ export function Item(props: {items: Array<{name: string}>}): JSX.Element {
     const isAddAction = !(menuItemBtnAction[menuItem].action === 'add');
     const fn = isAddAction ? addUser : deleteLastUser;
     const action = isAddAction ? 'add' : 'delete';
+    const disabled = checkDisableBtn(action, menuItem);
 
     setCheckboxBtnAction({
-      [menuItem]: { action, fn, disabled: checkDisableBtn(action, menuItem) }
+      [menuItem]: { action, fn, disabled }
     })
   }
 
-  const btnClick = (menuItem: string) => {
-    // Можливо тут потрібно використати useEffect, щоб зачекати, коли відпрацює функція add/delete,
-    // щоб потім змінити стан кнопки, бо зараз setCheckboxBtnAction відпрацьовує не вірно
+  useEffect(() => {
+    for (const menuItem in menuItemBtnAction) {
+      const disabled = checkDisableBtn(menuItemBtnAction[menuItem].action, menuItem);
+      setCheckboxBtnAction({ [menuItem]: { disabled } });
+    }
 
-    return () => {
-      menuItemBtnAction[menuItem].fn(menuItem, menuItemWithUsers);
-      setCheckboxBtnAction({
-        [menuItem]: { disabled: checkDisableBtn(menuItemBtnAction[menuItem].action, menuItem) }
-      });
-    };
-  }
+  }, [users, menuItemWithUsers]);
 
   return (
     <>
@@ -81,7 +77,8 @@ export function Item(props: {items: Array<{name: string}>}): JSX.Element {
                 <div style={{display: 'flex'}}>
                   <Button
                     name={item.name}
-                    onClick={btnClick(item.name)}
+                    onClick={() => menuItemBtnAction[item.name].fn(item.name, menuItemWithUsers)}
+                    disabled={menuItemBtnAction[item.name].disabled}
                   />
                   <label htmlFor={`${item.name}-checkbox`}>{menuItemBtnAction[item.name].action === 'add' ? 'Add' : 'Delete'}</label>
                   <input
