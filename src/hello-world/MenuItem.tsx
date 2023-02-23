@@ -9,13 +9,16 @@ import {IMenuItemWithUsersList} from "../Interfaces/MenuItemWithUsersList";
 
 export type BtnActionFn = (menuItem: string, menuItemWithUser: IMenuItemWithUser) => void;
 
+const usersKey = 'users';
+const menuItemWithUserKey = 'menuItemWithUser';
+
 export function Item(props: {items: Array<{name: string}>}): JSX.Element {
   const {items} = props;
-  const [menuItemWithUsers, setMenuItemUser] = useMerge(getInitialMenuObject);
+  const [menuItemWithUser, setMenuItemUser] = useMerge(getInitialMenuObject);
   const [users, setUsers] = useState<IMenuItemWithUsersList>(getInitialMenuUsersObject);
 
   const checkDisableBtn = (btnAction: 'add' | 'delete', menuItem: string): boolean => {
-    return (btnAction === 'add' && (menuItemWithUsers[menuItem].name === '' || menuItemWithUsers[menuItem].surname === '')) ||
+    return (btnAction === 'add' && (menuItemWithUser[menuItem].name === '' || menuItemWithUser[menuItem].surname === '')) ||
       (btnAction === 'delete' && users[menuItem].length === 0)
   }
 
@@ -25,6 +28,7 @@ export function Item(props: {items: Array<{name: string}>}): JSX.Element {
     if (!usersList[menuItem]){
       usersList[menuItem] = [];
     }
+
     usersList[menuItem].push({
       name: menuItemWithUser[menuItem].name,
       surname: menuItemWithUser[menuItem].surname,
@@ -61,12 +65,30 @@ export function Item(props: {items: Array<{name: string}>}): JSX.Element {
   }
 
   useEffect(() => {
+    try {
+      const usersLocalStorage = localStorage.getItem(usersKey);
+      usersLocalStorage && setUsers(JSON.parse(usersLocalStorage));
+
+      const menuItemWithUserLocalStorage = localStorage.getItem(menuItemWithUserKey);
+      menuItemWithUserLocalStorage && setMenuItemUser(JSON.parse(menuItemWithUserLocalStorage));
+    } catch {
+      console.log('error first setting')
+    }
+  }, []);
+
+  useEffect(() => {
     for (const menuItem in menuItemBtnAction) {
       const disabled = checkDisableBtn(menuItemBtnAction[menuItem].action, menuItem);
       setCheckboxBtnAction({ [menuItem]: { disabled } });
     }
+    try {
+      localStorage.setItem(usersKey, JSON.stringify(users));
+      localStorage.setItem(menuItemWithUserKey, JSON.stringify(menuItemWithUser));
+    } catch {
+      console.log('error useEffect set data')
+    }
+  }, [users, menuItemWithUser]);
 
-  }, [users, menuItemWithUsers]);
 
   return (
     <>
@@ -77,7 +99,7 @@ export function Item(props: {items: Array<{name: string}>}): JSX.Element {
                 <div style={{display: 'flex'}}>
                   <Button
                     name={item.name}
-                    onClick={() => menuItemBtnAction[item.name].fn(item.name, menuItemWithUsers)}
+                    onClick={() => menuItemBtnAction[item.name].fn(item.name, menuItemWithUser)}
                     disabled={menuItemBtnAction[item.name].disabled}
                   />
                   <label htmlFor={`${item.name}-checkbox`}>{menuItemBtnAction[item.name].action === 'add' ? 'Add' : 'Delete'}</label>
@@ -89,8 +111,8 @@ export function Item(props: {items: Array<{name: string}>}): JSX.Element {
                     checked={menuItemBtnAction[item.name].action === 'add'}
                   />
                 </div>
-                <Input onChange={(name) => setMenuItemUser({ [item.name]: { name } })} value={menuItemWithUsers[item.name]?.name}/>
-                <Input onChange={(surname) => setMenuItemUser({ [item.name]: { surname } })} value={menuItemWithUsers[item.name]?.surname}/>
+                <Input onChange={(name) => setMenuItemUser({ [item.name]: { name } })} value={menuItemWithUser[item.name]?.name}/>
+                <Input onChange={(surname) => setMenuItemUser({ [item.name]: { surname } })} value={menuItemWithUser[item.name]?.surname}/>
                 <TableUsers users={users[item.name]}/>
               </div>
             </li>)
