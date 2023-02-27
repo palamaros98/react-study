@@ -1,5 +1,7 @@
 import {ChessPiecesEnum} from "./ChessPiecesEnum";
-import {ChessPiece} from "./ChessPiece";
+import {MemoizedChess} from "./ChessPiece";
+import {useLoggedLifecycle} from "../Hooks/useLoggedLifecycle";
+import {memo} from "react";
 
 interface Props {
   piece: ChessPiecesEnum,
@@ -7,12 +9,16 @@ interface Props {
   onClick: (value: ChessPiecesEnum) => void
 }
 
-export function ChessPieceSelectable({ piece, isSelected, onClick }: Props): JSX.Element {
+function ChessPieceSelectable({ piece, isSelected, onClick }: Props): JSX.Element {
+  useLoggedLifecycle(piece);
+
   return (
     <>
       <span style={{display: 'flex'}} onClick={() => onClick(piece)}>
-        <ChessPiece piece={piece} isSelected={isSelected}/>
+        <MemoizedChess piece={piece} isSelected={isSelected}/>
       </span>
     </>
   )
 }
+
+export const MemoizedChessPieceSelectable = memo(ChessPieceSelectable);

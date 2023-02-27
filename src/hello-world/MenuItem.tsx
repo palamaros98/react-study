@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {getInitialMenuItemBtnAction, getInitialMenuObject, getInitialMenuUsersObject} from "./InitialState";
 import {TableUsers} from "./TableUsers";
 import {Button} from "../Components/Button";
@@ -16,6 +16,7 @@ export function Item(props: {items: Array<{name: string}>}): JSX.Element {
   const {items} = props;
   const [menuItemWithUser, setMenuItemUser] = useMerge(getInitialMenuObject);
   const [users, setUsers] = useState<IMenuItemWithUsersList>(getInitialMenuUsersObject);
+  const input = useRef<HTMLInputElement | null>(null)
 
   const checkDisableBtn = (btnAction: 'add' | 'delete', menuItem: string): boolean => {
     return (btnAction === 'add' && (menuItemWithUser[menuItem].name === '' || menuItemWithUser[menuItem].surname === '')) ||

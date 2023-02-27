@@ -1,6 +1,7 @@
 import {ChessPiecesEnum} from "./ChessPiecesEnum";
 import './ChessPiecesList.css';
-import {ChessPieceSelectable} from "./ChessPieceSelectable";
+import {MemoizedChessPieceSelectable} from "./ChessPieceSelectable";
+import {useCallback} from "react";
 
 interface Props {
   selectedPiece: ChessPiecesEnum,
@@ -17,12 +18,23 @@ const pieces: ChessPiecesEnum[] = [
 ]
 
 export function ChessPiecesList({selectedPiece, onChange}: Props): JSX.Element {
+
+  const callback = (selectedPieces: ChessPiecesEnum) => {
+    onChange(selectedPieces);
+    console.log('Chess set piece')
+  }
+
+  const memoizedCallback = useCallback((selectedPiece: ChessPiecesEnum) => {
+    onChange(selectedPiece);
+    console.log('Chess set piece memoized')
+  }, [])
+
   return (
     <>
       <div className={'pieces-container'}>
         {pieces.map((piece) => (
-          <ChessPieceSelectable key={piece} piece={piece} isSelected={selectedPiece === piece}
-                      onClick={() => onChange(piece)}/>
+          <MemoizedChessPieceSelectable key={piece} piece={piece} isSelected={selectedPiece === piece}
+                      onClick={memoizedCallback}/>
         ))}
       </div>
     </>

@@ -1,5 +1,5 @@
 import {ChessPiecesEnum} from "./ChessPiecesEnum";
-import {CSSProperties} from "react";
+import {CSSProperties, memo} from "react";
 import {useLoggedLifecycle} from "../Hooks/useLoggedLifecycle";
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   isSelected: boolean,
 }
 
-export function ChessPiece({ piece, isSelected }: Props): JSX.Element {
+function ChessPiece({ piece, isSelected }: Props): JSX.Element {
   const style: CSSProperties = {
     color: isSelected ? 'red' : 'black',
     transform: isSelected ? 'scale(1.5)' : 'scale(1)',
@@ -16,7 +16,6 @@ export function ChessPiece({ piece, isSelected }: Props): JSX.Element {
     cursor: 'pointer',
     transition: 'all 0.3s ease-in-out',
   }
-  useLoggedLifecycle(piece);
 
   return (
     <>
@@ -24,3 +23,5 @@ export function ChessPiece({ piece, isSelected }: Props): JSX.Element {
     </>
   )
 }
+
+export const MemoizedChess = memo(ChessPiece);

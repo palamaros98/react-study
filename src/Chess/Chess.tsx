@@ -1,6 +1,6 @@
 import {ChessPiecesList} from "./ChessPiecesList";
-import {ChessPiece} from "./ChessPiece";
-import {useState} from "react";
+import {MemoizedChess} from "./ChessPiece";
+import {useCallback, useState} from "react";
 import {ChessPiecesEnum} from "./ChessPiecesEnum";
 
 
@@ -13,7 +13,7 @@ export function Chess(): JSX.Element {
         <ChessPiecesList selectedPiece={selectedPiece} onChange={setSelectedPiece}/>
       </div>
       <div style={{width: '100%', textAlign: 'center'}}>
-        <ChessPiece piece={selectedPiece} isSelected={true}/>
+        <MemoizedChess piece={selectedPiece} isSelected={true}/>
       </div>
 
     </>
