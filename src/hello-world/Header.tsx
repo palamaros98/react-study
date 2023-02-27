@@ -1,6 +1,7 @@
 import {Item} from "./MenuItem";
 import {menuItems} from "./InitialState";
 import {Menu} from "./Menu";
+import {UsersFromBack} from "../Users/Users";
 
 export function Header(): JSX.Element {
   return (
@@ -8,6 +9,7 @@ export function Header(): JSX.Element {
       <Menu>
         <Item items={menuItems}/>
       </Menu>
+      <UsersFromBack/>
     </section>
   )
 }
